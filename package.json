@@ -1,0 +1,17 @@
+{
+  "name": "learn2play",
+  "version": "0.0.1",
+  "description": "League of legends application that tracks if you are improving or not",
+  "main": "run.js",
+  "scripts": {
+    "test": "node tests/index.js",
+    "start": "node run.js"
+  },
+  "author": "Thomas E Herman Jr",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "express-hbs": "^1.0.4",
+    "node-fetch": "^1.6.3"
+  }
+}

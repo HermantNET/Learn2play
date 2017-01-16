@@ -1,0 +1,29 @@
+<table border="1">
+  <tr>
+    <th>Win?</th>
+    <th>Kills</th>
+    <th>Assists</th>
+    <th>Deaths</th>
+    <th>CS</th>
+    <th>Time Played</th>
+    <th>Game Mode</th>
+    <th>Type</th>
+    <th>Date</th>
+  </tr>
+  {{#each recentGames}}
+    <tr>
+      <td>{{win}}</td>
+      <td>{{kills}}</td>
+      <td>{{assists}}</td>
+      <td>{{deaths}}</td>
+      <td>{{cs}}</td>
+      <td>{{timePlayed}}</td>
+      <td>{{mode}}</td>
+      <td>{{type}}</td>
+      <td>{{date}}</td>
+    </tr>
+  {{/each}}
+</table>
+
+<h3>Recent Game Stats <span>Last 10 games.</span></h3>
+{{> recentPerformance recentPerformance}}
