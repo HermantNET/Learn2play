@@ -1,6 +1,7 @@
 <table border="1">
   <tr>
     <th>Win?</th>
+    <th>Champion</th>
     <th>Kills</th>
     <th>Assists</th>
     <th>Deaths</th>
@@ -13,6 +14,12 @@
   {{#each recentGames}}
     <tr>
       <td>{{win}}</td>
+      <td>
+        {{#with champion.image}}
+        <img style="object-fit:none;width:{{w}}px;height:{{h}}px;object-position:-{{x}}px -{{y}}px;" src="http://ddragon.leagueoflegends.com/cdn/7.1.1/img/sprite/{{sprite}}"></img>
+        {{/with}}
+        {{champion.name}}
+      </td>
       <td>{{kills}}</td>
       <td>{{assists}}</td>
       <td>{{deaths}}</td>

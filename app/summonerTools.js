@@ -1,4 +1,4 @@
-var summoner = function () {};
+var summonerTools = function () {};
 
 function avg(numsArray) {
   numsArray = numsArray.map((num) => isNaN(num)  ? 0 : num);
@@ -9,7 +9,7 @@ function avg(numsArray) {
   };
 }
 
-summoner.recentPerformance = function(games) {
+summonerTools.recentPerformance = function(games) {
   var result = games.reduce(function(result, game) {
     return game.win ? result.wins++ : result.losses++;
   }, {wins: 0, losses: 0});
@@ -40,4 +40,4 @@ summoner.recentPerformance = function(games) {
   };
 };
 
-module.exports = summoner;
+module.exports = summonerTools;

@@ -18,6 +18,22 @@ function MakeRequest(count = 1) {
 // Methods should return a Promise
 const RiotAPI = [];
 
+RiotAPI.Champions = function() {
+  fetch(`https://global.api.pvp.net/api/lol/static-data/na/v1.2/champion?locale=en_US&champData=image&api_key=${key}`)
+    .then(function(res) {
+        return res.json();
+    })
+    .then(function(champions) {
+      summonerCache.set('champions', champions.data, function(err, success) {
+        if(!err && success) {
+          console.log('Cached champions');
+        } else {
+          console.log('Error caching champions');
+        }
+      });
+    });
+};
+
 RiotAPI.SummByName = function(region, name) {
   MakeRequest();
   return fetch(`https://${region}.api.pvp.net/api/lol/${region}/v1.4/summoner/by-name/${name}?api_key=${key}`)
@@ -36,12 +52,26 @@ RiotAPI.RecentGames = function(region, id) {
     .then(function(res) {
       return res.json();
     })
-    .then(function(recentGames) {
-      var games = recentGames.games;
+    .then(function(body) {
+      body.champions = summonerCache.get('champions');
+      return body;
+    })
+    .then(function(body) {
+      var games = body.games;
       var gameList = [];
       for(var i = 0; i < games.length; i++) {
         var game = games[i];
+        var champion = null;
+
+        for(var champ in body.champions) {
+          if(game.championId === body.champions[champ].id) {
+            champion = body.champions[champ];
+            break;
+          }
+        }
+
         gameList.push({
+          champion: champion,
           win: game.stats.win,
           kills: game.stats.championsKilled || 0,
           assists: game.stats.assists || 0,

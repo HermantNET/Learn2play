@@ -2,25 +2,23 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Learn2play</title>
+    {{{_sections.head}}}
   </head>
   <body>
     <nav>
       <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
         <li>
-          <div class="searchBox">
-            <p>search box placeholder</p>
-          </div>
+          {{> searchBox}}
         </li>
-        <li>about</li>
       </ul>
     </nav>
     {{{body}}}
     <footer>
-      <ul>
-        <li>sitemap</li>
-        <li>riot api agreement</li>
-      </ul>
+      {{> disclaimer}}
     </footer>
+
+    <script src="/js/index.js" type="text/javascript"></script>
   </body>
 </html>

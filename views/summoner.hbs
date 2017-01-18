@@ -1,4 +1,10 @@
-<h1>{{name}} | {{region}}</h1>
+{{#section 'head'}}
+  <title>L2P: {{name}} | {{region}}</title>
+{{/section}}
 
+<h1>{{name}} | {{region}}</h1>
+<button onclick="refresh()">Refresh</button> <span id="lastUpdated">{{lastUpdated}}</span>
 {{> (lookup ranked 'ranked') }}
 {{> recentGames}}
+
+<script src="/js/summoner.js" type="text/javascript"></script>

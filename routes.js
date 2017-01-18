@@ -1,13 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const RiotAPI = require('./riot_api.js');
-const summFuncs = require('./app/summoner.js');
+const summTools = require('./app/summonerTools.js');
 
 router.get('/', function(req, res) {
   var data = {
     title: "learn2play"
   };
   res.render('index', data);
+});
+
+router.get('/:region/:name/refresh', function(req, res) {
+  summonerCache.del(`${req.params.region.toUpperCase()}/${req.params.name.toLowerCase()}`);
+  res.redirect(`/${req.params.region}/${req.params.name}`);
 });
 
 router.get('/:region/:name', function(req, res) {
@@ -26,7 +31,7 @@ router.get('/:region/:name', function(req, res) {
         RiotAPI.RecentGames(summoner.region, summoner.id)
           .then(function(recentGames) {
             summoner.recentGames = recentGames;
-            summoner.recentPerformance = summFuncs.recentPerformance(recentGames);
+            summoner.recentPerformance = summTools.recentPerformance(recentGames);
 
             RiotAPI.SummRank(summoner.region, summoner.id)
               .then(function(ranked) {
@@ -50,6 +55,7 @@ router.get('/:region/:name', function(req, res) {
                     losses: ranked.entries[0].losses
                   };
                 }
+                summoner.lastUpdated = Date.now();
                 res.render('summoner', summoner);
                 summonerCache.set(`${summoner.region}/${summoner.name.toLowerCase()}`, summoner, function(err, success) {
                   if(!err && success) {
