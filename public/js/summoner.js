@@ -6,3 +6,4 @@ function lastUpdated() {
 }
 
 lastUpdated();
+setInterval(lastUpdated, 30000);

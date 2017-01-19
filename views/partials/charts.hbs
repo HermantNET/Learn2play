@@ -1,0 +1,128 @@
+
+<title>L2P: {{name}} | {{region}}</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart', 'bar', 'table']});
+    google.charts.setOnLoadCallback(drawCharts);
+
+    function drawChartRankedWinRate() {
+      var options = {
+        width:120,
+        height:120,
+        chartArea: {width: '90%', height: '90%'},
+        legend: 'none',
+        slices: {
+          0: { color: 'red' },
+          1: { color: 'blue' },
+          2: { color: 'grey' }
+        },
+        fontSize: 10
+      };
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Result');
+      data.addColumn('number', 'Count');
+      data.addRows([
+        ['Losses', {{ranked.losses}} + 0],
+        ['Wins', {{ranked.wins}}  + 0]
+      ]);
+      ('{{ranked.ranked}}' === 'unranked') ? data.addRow(['NA', 1]) : null;
+
+      var chart = new google.visualization.PieChart(document.getElementById('chart_rankedWinRate'));
+      chart.draw(data, options);
+    }
+
+    function drawChartRecentWinRate() {
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Result');
+      data.addColumn('number', 'Count');
+      data.addRows([
+        ['Losses', {{recentPerformance.result.losses}}],
+        ['Wins', {{recentPerformance.result.wins}}]
+      ]);
+
+      var options = {
+                      width:120,
+                      height:120,
+                      chartArea: {width: '90%', height: '90%'},
+                      legend: 'none',
+                      slices: {
+                       0: { color: 'red' },
+                       1: { color: 'blue' }
+                      },
+                      fontSize: 10
+                    };
+
+      var chart = new google.visualization.PieChart(document.getElementById('chart_recentWinRate'));
+      chart.draw(data, options);
+    }
+
+    function drawChartRecentPerformance() {
+      var data = google.visualization.arrayToDataTable([
+        {{#with recentPerformance}}
+        ['Stat', 'Most', 'Least', 'Average'],
+        ['Kills', {{kills.most}}, {{kills.least}}, {{kills.avg}}],
+        ['Deaths', {{deaths.most}}, {{deaths.least}}, {{deaths.avg}}],
+        ['Assists', {{assists.most}}, {{assists.least}}, {{assists.avg}}]
+        {{/with}}
+      ]);
+
+      var options = {
+        chart: {
+          title: 'Recent Performance',
+          subtitle: 'Past 10 games',
+        },
+        bars: 'horizontal' // Required for Material Bar Charts.
+      };
+
+      var chart = new google.charts.Bar(document.getElementById('chart_recentPerformance'));
+
+      chart.draw(data, options);
+    }
+
+    function drawTableRecentGames() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('boolean', 'Win?');
+      data.addColumn('string', '');
+      data.addColumn('string', 'Champion');
+      data.addColumn('number', 'Kills');
+      data.addColumn('number', 'Deaths');
+      data.addColumn('number', 'Assists');
+      data.addColumn('number', 'CS');
+      data.addColumn('number', 'Time (minutes)');
+      data.addColumn('string', 'Mode');
+      data.addColumn('string', 'Type');
+      data.addColumn('number', 'Date');
+      data.addRows([
+        {{#each recentGames}}
+        [{{win}},  {v: '{{champion.name}}', f: `{{#with champion.image}}
+          <img style="object-fit:none;width:{{w}}px;height:{{h}}px;object-position:-{{x}}px -{{y}}px;" src="http://ddragon.leagueoflegends.com/cdn/7.1.1/img/sprite/{{sprite}}"></img>
+          {{/with}}`}, '{{champion.name}}', {{kills}}, {{deaths}}, {{assists}}, {{cs}}, {{timePlayed}}, '{{mode}}', '{{type}}', {v: {{date}}, f:new Date({{date}}).toDateString()}],
+        {{/each}}
+      ]);
+
+      var table = new google.visualization.Table(document.getElementById('table_recentGames'));
+      var options = {
+        height: '100%',
+         width: '100%',
+        allowHtml: true
+      }
+
+      table.draw(data, options);
+    }
+
+    function drawCharts() {
+      drawChartRankedWinRate();
+      drawChartRecentPerformance();
+      drawTableRecentGames();
+      drawChartRecentWinRate();
+    }
+
+    function resize() {
+      drawChartRecentPerformance();
+    }
+
+    window.onresize = resize;
+</script>

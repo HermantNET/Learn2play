@@ -1,36 +1,4 @@
-<table border="1">
-  <tr>
-    <th>Win?</th>
-    <th>Champion</th>
-    <th>Kills</th>
-    <th>Assists</th>
-    <th>Deaths</th>
-    <th>CS</th>
-    <th>Time Played</th>
-    <th>Game Mode</th>
-    <th>Type</th>
-    <th>Date</th>
-  </tr>
-  {{#each recentGames}}
-    <tr>
-      <td>{{win}}</td>
-      <td>
-        {{#with champion.image}}
-        <img style="object-fit:none;width:{{w}}px;height:{{h}}px;object-position:-{{x}}px -{{y}}px;" src="http://ddragon.leagueoflegends.com/cdn/7.1.1/img/sprite/{{sprite}}"></img>
-        {{/with}}
-        {{champion.name}}
-      </td>
-      <td>{{kills}}</td>
-      <td>{{assists}}</td>
-      <td>{{deaths}}</td>
-      <td>{{cs}}</td>
-      <td>{{timePlayed}}</td>
-      <td>{{mode}}</td>
-      <td>{{type}}</td>
-      <td>{{date}}</td>
-    </tr>
-  {{/each}}
-</table>
-
-<h3>Recent Game Stats <span>Last 10 games.</span></h3>
-{{> recentPerformance recentPerformance}}
+<div id="recentGames">
+  <h2>Recent Games</h2>
+  <div id="table_recentGames"></div>
+</div>

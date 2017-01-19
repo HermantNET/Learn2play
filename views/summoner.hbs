@@ -2,9 +2,26 @@
   <title>L2P: {{name}} | {{region}}</title>
 {{/section}}
 
-<h1>{{name}} | {{region}}</h1>
-<button onclick="refresh()">Refresh</button> <span id="lastUpdated">{{lastUpdated}}</span>
-{{> (lookup ranked 'ranked') }}
-{{> recentGames}}
+<div class="container">
+  <div id="summonerInfo">
+    <h1>{{name}} | {{region}}</h1>
+    <button onclick="refresh()">Refresh</button> <span id="lastUpdated">{{lastUpdated}}</span>
+    {{> (lookup ranked 'ranked') }}
+    <div>
+      <h3>Win Rates</h3>
+      <div class="pieChart">
+        <p>Ranked</p>
+        <div id="chart_rankedWinRate"></div>
+      </div>
+      <div class="pieChart">
+        <p>Recent</p>
+        <div id="chart_recentWinRate"></div>
+      </div>
+    </div>
+  </div>
+  {{> recentGames}}
+</div>
+
+{{> recentPerformance recentPerformance}}
 
 <script src="/js/summoner.js" type="text/javascript"></script>
