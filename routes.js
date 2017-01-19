@@ -5,9 +5,13 @@ const summTools = require('./app/summonerTools.js');
 
 router.get('/', function(req, res) {
   var data = {
-    title: "learn2play"
+    title: "Learn2play"
   };
   res.render('index', data);
+});
+
+router.get('/about', function(req, res) {
+  res.render('about');
 });
 
 router.get('/:region/:name/refresh', function(req, res) {
@@ -55,15 +59,21 @@ router.get('/:region/:name', function(req, res) {
                     losses: ranked.entries[0].losses
                   };
                 }
-                summoner.lastUpdated = Date.now();
-                res.render('summoner', summoner);
-                summonerCache.set(`${summoner.region}/${summoner.name.toLowerCase()}`, summoner, function(err, success) {
-                  if(!err && success) {
-                    console.log(`Cached ${summoner.region}/${summoner.name}`);
-                  } else {
-                    console.log(`Error caching ${summoner.region}/${summoner.name}`);
-                  }
-                });
+
+                RiotAPI.TopChamps(summoner.region, summoner.id)
+                  .then(function(topChamps) {
+                    summoner.topChamps = topChamps;
+
+                    summoner.lastUpdated = Date.now();
+                    res.render('summoner', summoner);
+                    summonerCache.set(`${summoner.region}/${summoner.name.toLowerCase()}`, summoner, function(err, success) {
+                      if(!err && success) {
+                        console.log(`Cached ${summoner.region}/${summoner.name}`);
+                      } else {
+                        console.log(`Error caching ${summoner.region}/${summoner.name}`);
+                      }
+                    });
+                  });
               });
           });
       });

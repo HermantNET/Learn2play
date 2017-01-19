@@ -20,7 +20,7 @@ body {
 #body {
   align-self: center;
   align-items: center;
-  width: 80%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -35,12 +35,25 @@ body {
 
 #summonerInfo {
   text-align: center;
-  margin-right: 3em;
 }
 
 #recentPerformance {
   padding: 1em;
   width: 100%;
+}
+
+#mastery {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+#mastery .champ {
+  width: 8em;
+}
+
+#mastery>div>div {
+  display: inline-block;
 }
 
 #chart_recentPerformance {
@@ -54,9 +67,14 @@ body {
 }
 
 .container {
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.container>div {
+  margin: 0 1em;
 }
 
 .searchBoxBig {
@@ -69,4 +87,8 @@ body {
   text-align: center;
   margin: 0 auto;
   padding-top: 10em;
+}
+
+.stats {
+  vertical-align: top;
 }

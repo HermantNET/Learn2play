@@ -3,13 +3,18 @@ const key = require('./confidential.json').RiotApiKey;
 
 // api request tracking
 var requestsRemaining = 500;
+var requestsRemaining2 = 10;
 var requestTimer = setInterval(function() {
   requestsRemaining = 500;
 }, 600000);
+var requestTimer2 = setInterval(function() {
+  requestsRemaining2 = 10;
+}, 10000);
 
 function MakeRequest(count = 1) {
-  if (requestsRemaining === 0) return Promise.resolve("Maximum Riot API requests exceeded.");
+  if (requestsRemaining === 0 || requestsRemaining2 === 0) return Promise.resolve("Maximum Riot API requests exceeded.");
   requestsRemaining -= count;
+  requestsRemaining2 -= count;
   console.log(`${requestsRemaining} request remaining.`);
 }
 // *-------------------------------------------------------------------------*
@@ -93,6 +98,71 @@ RiotAPI.SummRank = function(region, id) {
   .then(function(res) {
     return res.json();
   });
+};
+
+RiotAPI.TopChamps = function(region, id) {
+  var subregion;
+  switch (region) {
+    case 'BR':
+      subregion = 'BR1';
+      break;
+    case 'EUNE':
+      subregion = 'EUN1';
+      break;
+    case 'EUW':
+      subregion = 'EUW1';
+      break;
+    case 'JP':
+      subregion = 'JP1';
+      break;
+    case 'KR':
+      subregion = 'KR';
+      break;
+    case 'LAN':
+      subregion = 'LA1';
+      break;
+    case 'LAS':
+      subregion = 'LA2';
+      break;
+    case 'NA':
+      subregion = 'NA1';
+      break;
+    case 'OCE':
+      subregion = 'OC1';
+      break;
+    case 'RU':
+      subregion = 'RU';
+      break;
+    case 'TR':
+      subregion = 'TR1';
+      break;
+    default:
+      subregion = 'NA';
+      break;
+  }
+
+  MakeRequest();
+  return fetch(`https://${region}.api.pvp.net/championmastery/location/${subregion}/player/${id}/topchampions?count=4&api_key=${key}`)
+    .then(function(res) {
+      return res.json();
+    })
+    .then(function(body) {
+      return [body, summonerCache.get('champions')];
+    })
+    .then(function([body, champs]) {
+      return body.map(function(c) {
+        for (var champ in champs) {
+          if(champs[champ].id === c.championId) {
+            var result = champs[champ];
+            result.championPoints = c.championPoints.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            result.chestGranted = c.chestGranted;
+            result.championLevel = c.championLevel;
+
+            return result;
+          }
+        }
+      });
+    });
 };
 
 module.exports = RiotAPI;

@@ -1,0 +1,19 @@
+<div id="mastery">
+  <h3>Top Champs</h3>
+  {{#each topChamps}}
+    <div>
+      <div class="champ">
+        {{#with image}}
+        <img style="object-fit:none;width:{{w}}px;height:{{h}}px;object-position:-{{x}}px -{{y}}px;" src="http://ddragon.leagueoflegends.com/cdn/7.1.1/img/sprite/{{sprite}}"></img>
+        {{/with}}
+        <p><strong>{{name}}</strong></p>
+        <h5>{{title}}</h5>
+      </div>
+      <div class="stats">
+        <p>Mastery Level - {{championLevel}}</p>
+        <p>Champion Points - {{championPoints}}</p>
+        <p>Chest Earned? - {{chestGranted}}</p>
+      </div>
+    </div>
+  {{/each}}
+</div>
