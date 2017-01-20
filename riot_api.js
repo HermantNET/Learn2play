@@ -47,7 +47,7 @@ RiotAPI.SummByName = function(region, name) {
       return res.json();
     })
     .then(function(body) {
-      if (body.status !== undefined) return undefined;
+      if (body.status !== undefined) return Promise.reject(new Error("Summoner not found."));
       return body;
     });
 };
@@ -90,7 +90,8 @@ RiotAPI.RecentGames = function(region, id) {
         });
       }
       return gameList;
-    });
+    })
+    .catch(() => Promise.reject(new Error("Inactive summoner.")));
 };
 
 RiotAPI.SummRank = function(region, id) {

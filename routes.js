@@ -28,7 +28,6 @@ router.get('/:region/:name', function(req, res) {
     var id;
     RiotAPI.SummByName(region, name)
       .then(function(summ) {
-        if(summ === undefined) return Promise.reject(new Error("Summoner not found."));
         summoner = summ[req.params.name.toLowerCase().replace(/ /g,'')];
         summoner.region = region.toUpperCase();
         id = summoner.id;
@@ -38,7 +37,7 @@ router.get('/:region/:name', function(req, res) {
         summoner.recentGames = recentGames;
         summoner.recentPerformance = summTools.recentPerformance(recentGames);
         return RiotAPI.SummRank(region, id);
-      }, () => Promise.reject(new Error("Inactive summoner.")))
+      })
       .then(function(ranked) {
         ranked = ranked.status === undefined
           ? ranked[summoner.id].find((queue) => queue.queue === "RANKED_SOLO_5x5")
