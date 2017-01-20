@@ -20,66 +20,62 @@ router.get('/:region/:name/refresh', function(req, res) {
 });
 
 router.get('/:region/:name', function(req, res) {
+  var region = req.params.region;
+  var name = req.params.name;
   var summoner = summonerCache.get(`${req.params.region.toUpperCase()}/${req.params.name.toLowerCase()}`);
 
   if(summoner === undefined) {
-    RiotAPI.SummByName(req.params.region, req.params.name)
-      .then(function(body) {
-        if(body === undefined) {
-          res.render('notFound', req.params);
-          return;
-        }
-        summoner = body[req.params.name.toLowerCase().replace(/ /g,'')];
-        summoner.region = req.params.region.toUpperCase();
-
-        RiotAPI.RecentGames(summoner.region, summoner.id)
-          .then(function(recentGames) {
-            summoner.recentGames = recentGames;
-            summoner.recentPerformance = summTools.recentPerformance(recentGames);
-
-            RiotAPI.SummRank(summoner.region, summoner.id)
-              .then(function(ranked) {
-                if(ranked.status === undefined) {
-                  ranked = ranked[summoner.id].find(function(queue) {
-                    return queue.queue === "RANKED_SOLO_5x5";
-                  });
-                } else {
-                  ranked = null;
-                }
-                if(ranked === null) {
-                  summoner.ranked = { ranked: "unranked" };
-                } else {
-                  summoner.ranked = {
-                    ranked: "ranked",
-                    name: ranked.name,
-                    tier: ranked.tier,
-                    leaguePoints: ranked.entries[0].leaguePoints,
-                    division: ranked.entries[0].division,
-                    wins: ranked.entries[0].wins,
-                    losses: ranked.entries[0].losses
-                  };
-                }
-
-                RiotAPI.TopChamps(summoner.region, summoner.id)
-                  .then(function(topChamps) {
-                    summoner.topChamps = topChamps;
-
-                    summoner.lastUpdated = Date.now();
-                    res.render('summoner', summoner);
-                    summonerCache.set(`${summoner.region}/${summoner.name.toLowerCase()}`, summoner, function(err, success) {
-                      if(!err && success) {
-                        console.log(`Cached ${summoner.region}/${summoner.name}`);
-                      } else {
-                        console.log(`Error caching ${summoner.region}/${summoner.name}`);
-                      }
-                    });
-                  });
-              });
-          });
+    var id;
+    RiotAPI.SummByName(region, name)
+      .then(function(summ) {
+        summoner = summ[req.params.name.toLowerCase().replace(/ /g,'')];
+        summoner.region = region.toUpperCase();
+        id = summoner.id;
+        return RiotAPI.RecentGames(region, id);
+      })
+      .then(function(recentGames) {
+        summoner.recentGames = recentGames;
+        summoner.recentPerformance = summTools.recentPerformance(recentGames);
+        return RiotAPI.SummRank(region, id);
+      })
+      .then(function(ranked) {
+        ranked = ranked.status === undefined
+          ? ranked[summoner.id].find((queue) => queue.queue === "RANKED_SOLO_5x5")
+          : null;
+        summoner.ranked = ranked === null
+          ? { ranked: "unranked" }
+          : {
+              ranked: "ranked",
+              name: ranked.name,
+              tier: ranked.tier,
+              leaguePoints: ranked.entries[0].leaguePoints,
+              division: ranked.entries[0].division,
+              wins: ranked.entries[0].wins,
+              losses: ranked.entries[0].losses
+            };
+        return RiotAPI.TopChamps(region, id);
+      })
+      .then(function(topChamps) {
+        summoner.topChamps = topChamps;
+      })
+      .then(function() {
+        summoner.lastUpdated = Date.now();
+        res.render('summoner', summoner);
+        summonerCache.set(`${summoner.region}/${summoner.name.toLowerCase()}`, summoner, function(err, success) {
+          if(!err && success) {
+            console.log(`Cached ${summoner.region}/${summoner.name}`);
+          } else {
+            console.log(`Error caching ${summoner.region}/${summoner.name}`);
+          }
+        });
       });
   } else {
-    res.render('summoner', summoner);
+    render('summoner', summoner);
   }
+});
+
+router.get('/*', function(req, res) {
+  res.redirect('/');
 });
 
 module.exports = router;

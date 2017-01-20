@@ -15,7 +15,7 @@ function MakeRequest(count = 1) {
   if (requestsRemaining === 0 || requestsRemaining2 === 0) return Promise.resolve("Maximum Riot API requests exceeded.");
   requestsRemaining -= count;
   requestsRemaining2 -= count;
-  console.log(`${requestsRemaining} request remaining.`);
+  console.log(`${requestsRemaining2}/${requestsRemaining} request remaining.`);
 }
 // *-------------------------------------------------------------------------*
 
