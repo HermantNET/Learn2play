@@ -10,11 +10,12 @@ function avg(numsArray) {
 }
 
 summonerTools.recentPerformance = function(games) {
-  var result = games.reduce(function(result, game) {
-    game.win ? result.wins++ : result.losses++;
-    return result;
-  }, {wins: 0, losses: 0});
-  result.avg = result.wins / result.losses;
+  var result = games.length > 1
+    ? games.reduce(function(result, game) {
+        game.win ? result.wins++ : result.losses++;
+        return result;
+      }, {wins: 0, losses: 0})
+    : {wins: 0, losses: 0};
 
   var _kills = games.map(game => game.kills);
   var kills = avg(_kills);

@@ -12,10 +12,11 @@ var requestTimer2 = setInterval(function() {
 }, 10000);
 
 function MakeRequest(count = 1) {
-  if (requestsRemaining === 0 || requestsRemaining2 === 0) return Promise.resolve("Maximum Riot API requests exceeded.");
+  if (requestsRemaining === 0 || requestsRemaining2 === 0) return false;
   requestsRemaining -= count;
   requestsRemaining2 -= count;
   console.log(`${requestsRemaining2}/${requestsRemaining} request remaining.`);
+  return true;
 }
 // *-------------------------------------------------------------------------*
 
@@ -40,7 +41,7 @@ RiotAPI.Champions = function() {
 };
 
 RiotAPI.SummByName = function(region, name) {
-  MakeRequest();
+  if (!MakeRequest()) return Promise.reject(new Error("Maximum API requests exceeded."));
   return fetch(`https://${region}.api.pvp.net/api/lol/${region}/v1.4/summoner/by-name/${name}?api_key=${key}`)
     .then(function(res) {
       return res.json();
@@ -52,7 +53,7 @@ RiotAPI.SummByName = function(region, name) {
 };
 
 RiotAPI.RecentGames = function(region, id) {
-  MakeRequest();
+  if (!MakeRequest()) return Promise.reject(new Error("Maximum API requests exceeded."));
   return fetch(`https://${region}.api.pvp.net/api/lol/${region}/v1.3/game/by-summoner/${id}/recent?api_key=${key}`)
     .then(function(res) {
       return res.json();
@@ -93,7 +94,7 @@ RiotAPI.RecentGames = function(region, id) {
 };
 
 RiotAPI.SummRank = function(region, id) {
-  MakeRequest();
+  if (!MakeRequest()) return Promise.reject(new Error("Maximum API requests exceeded."));
   return fetch(`https://${region}.api.pvp.net/api/lol/${region}/v2.5/league/by-summoner/${id}/entry?api_key=${key}`)
   .then(function(res) {
     return res.json();
@@ -141,7 +142,7 @@ RiotAPI.TopChamps = function(region, id) {
       break;
   }
 
-  MakeRequest();
+  if (!MakeRequest()) return Promise.reject(new Error("Maximum API requests exceeded."));
   return fetch(`https://${region}.api.pvp.net/championmastery/location/${subregion}/player/${id}/topchampions?count=4&api_key=${key}`)
     .then(function(res) {
       return res.json();
