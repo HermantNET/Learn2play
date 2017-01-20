@@ -25,18 +25,20 @@ router.get('/:region/:name', function(req, res) {
   var summoner = summonerCache.get(`${req.params.region.toUpperCase()}/${req.params.name.toLowerCase()}`);
 
   if(summoner === undefined) {
-    var id;
-    RiotAPI.SummByName(region, name)
+    Promise.resolve(region)
+      .then(function(region) {
+        if(!/BR|EUNE|EUW|JP|KR|LAN|LAS|NA|OCE|RU|TR/i.test(region)) return Promise.reject(new Error("Invalid region."));
+        return RiotAPI.SummByName(region, name);
+      })
       .then(function(summ) {
         summoner = summ[req.params.name.toLowerCase().replace(/ /g,'')];
         summoner.region = region.toUpperCase();
-        id = summoner.id;
-        return RiotAPI.RecentGames(region, id);
+        return RiotAPI.RecentGames(region, summoner.id);
       })
       .then(function(recentGames) {
         summoner.recentGames = recentGames;
         summoner.recentPerformance = summTools.recentPerformance(recentGames);
-        return RiotAPI.SummRank(region, id);
+        return RiotAPI.SummRank(region, summoner.id);
       })
       .then(function(ranked) {
         ranked = ranked.status === undefined
@@ -53,7 +55,7 @@ router.get('/:region/:name', function(req, res) {
               wins: ranked.entries[0].wins,
               losses: ranked.entries[0].losses
             };
-        return RiotAPI.TopChamps(region, id);
+        return RiotAPI.TopChamps(region, summoner.id);
       })
       .then(function(topChamps) {
         summoner.topChamps = topChamps;
