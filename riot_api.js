@@ -144,7 +144,7 @@ RiotAPI.TopChamps = function(region, id) {
   }
 
   if (!MakeRequest()) return Promise.reject(new Error("Maximum API requests exceeded."));
-  return fetch(`https://${region}.api.pvp.net/championmastery/location/${subregion}/player/${id}/topchampions?count=4&api_key=${key}`)
+  return fetch(`https://${region}.api.pvp.net/championmastery/location/${subregion}/player/${id}/topchampions?count=3&api_key=${key}`)
     .then(function(res) {
       return res.json();
     })

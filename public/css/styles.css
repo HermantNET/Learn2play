@@ -9,7 +9,6 @@ body {
   display: flex;
   flex-direction: row;
   justify-content:  center;
-  margin: 5;
   list-style: none;
 }
 
@@ -24,10 +23,11 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 2em;
+  padding: 0 2em;
 }
 
 #footer {
+  padding-top: 2em;
   text-align: center;
 }
 
@@ -46,6 +46,11 @@ body {
   text-align: center;
   display: flex;
   flex-direction: column;
+}
+
+#mastery>div {
+  padding-top: 1rem;
+  border-bottom: 1px solid black;
 }
 
 #mastery .champ {
@@ -71,9 +76,11 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: flex-start;
 }
 
 .container>div {
+  padding: 1rem;
   margin: 0 1em;
 }
 

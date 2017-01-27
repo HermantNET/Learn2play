@@ -8,7 +8,7 @@ const RiotAPI = require('./riot_api.js');
 // *-------------------------------------------------------------------------*
 
 // config
-const port = 3000;
+const port = 4000;
 global.summonerCache = new ncache({
   stdTTL: 1209600, // 2 Weeks
   checkperiod: 86400 // 24 hours
